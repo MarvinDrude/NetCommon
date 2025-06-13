@@ -35,6 +35,12 @@ public ref struct ArrayWriter<T> : IDisposable
       _position = 0;
    }
 
+   public void Write(in T value)
+   {
+      GetUsableSpan(1)[0] = value;
+      _position++;
+   }
+   
    public void Write(scoped ReadOnlySpan<T> span)
    {
       if (span.IsEmpty)
