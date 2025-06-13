@@ -1,4 +1,6 @@
 ﻿
+using System.Runtime.CompilerServices;
+
 namespace NetCommon.Buffers;
 
 public ref struct ArrayWriter<T> : IDisposable
@@ -113,5 +115,5 @@ public ref struct ArrayWriter<T> : IDisposable
       return false;
    }
 
-   private const int DefaultArraySize = 256;
+   private const int DefaultArraySize = 1024;
 }

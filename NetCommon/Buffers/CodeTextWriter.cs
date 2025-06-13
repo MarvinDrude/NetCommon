@@ -1,4 +1,6 @@
-﻿namespace NetCommon.Buffers;
+﻿using System.Runtime.CompilerServices;
+
+namespace NetCommon.Buffers;
 
 public ref struct CodeTextWriter : IDisposable
 {

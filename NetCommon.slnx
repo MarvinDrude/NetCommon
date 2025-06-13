@@ -1,0 +1,4 @@
+﻿<Solution>
+  <Project Path="NetCommon.Experiments\NetCommon.Experiments.csproj" Type="Classic C#" />
+  <Project Path="NetCommon\NetCommon.csproj" Type="Classic C#" />
+</Solution>
