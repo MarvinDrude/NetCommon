@@ -5,13 +5,14 @@ using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Running;
 using NetCommon.Buffers;
 using NetCommon.Code;
+using NetCommon.Code.Modifiers;
 using NetCommon.Code.Modules;
 
-//var summary = BenchmarkRunner.Run<BenchmarkTest>();
-
+#if RELEASE
+var summary = BenchmarkRunner.Run<BenchmarkTest>();
+#else
 new BenchmarkTest().Run();
-
-_ = "";
+#endif
 
 [SimpleJob(RunStrategy.Throughput, iterationCount: 2)]
 [MinColumn, MaxColumn, MeanColumn, MedianColumn, MemoryDiagnoser]
@@ -34,9 +35,13 @@ public class BenchmarkTest
 
       var classes = builder.Class;
       classes.Create(out var mainClass);
-      
-      nameSpace.Using("System.Collections");
-      
+
+      const ClassModifier test = ClassModifier.Abstract | ClassModifier.Unsafe;
+      var testSize = test.GetCharBufferSize();
+      Span<char> span = stackalloc char[testSize];
+      test.FillCharBuffer(span);
+
+      builder.Writer.WriteLine(span);
 
       builder.Dispose();
       

@@ -43,7 +43,7 @@ public ref struct ArrayWriter<T> : IDisposable
       Add() = value;
    }
    
-   public ref T Add()
+   private ref T Add()
    {
       ref var temp = ref MemoryMarshal.GetReference(GetUsableSpan(1));
       _position++;
