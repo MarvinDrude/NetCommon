@@ -6,8 +6,8 @@ public static class ArrayPoolAllocator<T>
 {
    private static readonly ArrayPool<T> _pool = ArrayPool<T>.Shared;
 
-   public static ArrayPoolAllocation<T> Create(int length)
+   public static void Create(int length, out ArrayPoolAllocation<T> allocation)
    {
-      return new ArrayPoolAllocation<T>(_pool, length);
+      allocation = new ArrayPoolAllocation<T>(_pool, length);
    }
 }

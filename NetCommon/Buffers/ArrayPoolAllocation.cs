@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace NetCommon.Buffers;
 
+[StructLayout(LayoutKind.Auto)]
 public readonly struct ArrayPoolAllocation<T> : IMemoryOwner<T>
 {
    private readonly ArrayPool<T> _pool;
@@ -23,12 +24,10 @@ public readonly struct ArrayPoolAllocation<T> : IMemoryOwner<T>
    
    public Memory<T> Memory => _memory.AsMemory(0, Length);
 
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public void CopyTo(ArrayPoolAllocation<T> other)
    {
-      var source = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(_memory), 0), Length);
-      var destination = MemoryMarshal.CreateSpan(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(other._memory), 0), Length);
-
-      source.CopyTo(destination);
+      Span.CopyTo(other.Span);
    }
    
    public void Dispose()

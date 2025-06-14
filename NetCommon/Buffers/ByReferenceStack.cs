@@ -1,10 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace NetCommon.Buffers;
 
 /// <summary>
 /// Use this only if you really know what you want to do with it.
 /// </summary>
+[StructLayout(LayoutKind.Auto)]
 public readonly ref struct ByReferenceStack<T>
    where T : allows ref struct
 {

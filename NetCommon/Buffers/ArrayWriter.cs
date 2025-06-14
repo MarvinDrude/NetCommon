@@ -1,8 +1,9 @@
 ﻿
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace NetCommon.Buffers;
 
+[StructLayout(LayoutKind.Auto)]
 public ref struct ArrayWriter<T> : IDisposable
 {
    public readonly int Capacity => _usesPoolMemory ? _growBuffer.Length : _buffer.Length;
@@ -37,6 +38,18 @@ public ref struct ArrayWriter<T> : IDisposable
       _position = 0;
    }
 
+   public void Add(T value)
+   {
+      Add() = value;
+   }
+   
+   public ref T Add()
+   {
+      ref var temp = ref MemoryMarshal.GetReference(GetUsableSpan(1));
+      _position++;
+      return ref temp;
+   }
+   
    public void Write(in T value)
    {
       GetUsableSpan(1)[0] = value;
@@ -62,7 +75,7 @@ public ref struct ArrayWriter<T> : IDisposable
       {
          if (CalculateSize(requestedSize, _growBuffer.Length, _position, out var grownSize))
          {
-            var newAllocation = ArrayPoolAllocator<T>.Create(grownSize);
+            ArrayPoolAllocator<T>.Create(grownSize, out var newAllocation);
             _growBuffer.CopyTo(newAllocation);
             _growBuffer.Dispose();
 
@@ -75,7 +88,7 @@ public ref struct ArrayWriter<T> : IDisposable
       {
          if (CalculateSize(requestedSize, _buffer.Length, _position, out var grownSize))
          {
-            _growBuffer = ArrayPoolAllocator<T>.Create(grownSize);
+            ArrayPoolAllocator<T>.Create(grownSize, out _growBuffer);
             _buffer.CopyTo(_growBuffer.Span);
 
             result = _growBuffer.Span;

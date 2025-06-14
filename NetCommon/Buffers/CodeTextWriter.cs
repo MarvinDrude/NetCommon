@@ -1,7 +1,10 @@
-﻿using System.Runtime.CompilerServices;
+﻿
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace NetCommon.Buffers;
 
+[StructLayout(LayoutKind.Auto)]
 public ref struct CodeTextWriter : IDisposable
 {
    private const char DefaultIndent = '\t';
@@ -31,15 +34,38 @@ public ref struct CodeTextWriter : IDisposable
       _indentCache = new ArrayWriter<char>(indentBuffer);
       for (var e = 0; e < indentBuffer.Length; e++)
       {
-         _indentCache.Write(_indentCharacter);
+         _indentCache.Add(_indentCharacter);
       }
    }
 
-   public void WriteLine()
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public void OpenBody()
    {
-      _buffer.Write(_newLineCharacter);
+      WriteLine("{");
+      UpIndent();
    }
 
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public void CloseBody()
+   {
+      WriteLine("}");
+      DownIndent();
+   }
+
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public void CloseBodySemicolon()
+   {
+      WriteLine("};");
+      DownIndent();
+   }
+
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public void WriteLine()
+   {
+      _buffer.Add(_newLineCharacter);
+   }
+
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public void WriteLineIf(bool condition)
    {
       if (condition)
@@ -56,6 +82,7 @@ public ref struct CodeTextWriter : IDisposable
       }
    }
    
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public void WriteLine(scoped ReadOnlySpan<char> content, bool multiLine = false)
    {
       Write(content, multiLine);
@@ -67,6 +94,7 @@ public ref struct CodeTextWriter : IDisposable
       WriteText(text.AsSpan());
    }
    
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public void WriteText(scoped ReadOnlySpan<char> text)
    {
       AddIndentOnDemand();
@@ -111,12 +139,14 @@ public ref struct CodeTextWriter : IDisposable
       }  
    }
    
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public void UpIndent()
    {
       _currentLevel++;
       _currentLevelBuffer = GetCurrentIndentBuffer();
    }
 
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public void DownIndent()
    {
       _currentLevel--;
@@ -134,7 +164,7 @@ public ref struct CodeTextWriter : IDisposable
 
       while (_indentCache.Position < _currentLevel)
       {
-         _indentCache.Write(_indentCharacter);
+         _indentCache.Add(_indentCharacter);
       }
 
       return _indentCache.WrittenSpan[.._currentLevel];
