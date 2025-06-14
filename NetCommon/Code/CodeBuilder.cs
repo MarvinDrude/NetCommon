@@ -14,6 +14,13 @@ public ref struct CodeBuilder : IDisposable
       get => ref Unsafe.AsRef(ref _nameSpace);
    }
    private NameSpaceModule _nameSpace;
+   
+   public ref ClassModule Class
+   {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => ref Unsafe.AsRef(ref _class);
+   }
+   private ClassModule _class;
 
    public ref CodeTextWriter Writer
    {
@@ -29,7 +36,10 @@ public ref struct CodeBuilder : IDisposable
       _writer = new CodeTextWriter(
          buffer, indentBuffer);
 
-      _nameSpace = new NameSpaceModule(ref Unsafe.AsRef(ref _writer));
+      ref var writer = ref Unsafe.AsRef(ref _writer);
+      
+      _nameSpace = new NameSpaceModule(ref writer);
+      _class = new ClassModule(ref writer);
    }
    
    public void Dispose()
