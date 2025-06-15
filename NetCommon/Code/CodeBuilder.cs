@@ -28,6 +28,8 @@ public ref struct CodeBuilder : IDisposable
       get => ref Unsafe.AsRef(ref _writer);
    }
    private CodeTextWriter _writer;
+
+   private CodeTemporaryStore _temporaryStore;
    
    public CodeBuilder(
       Span<char> buffer,

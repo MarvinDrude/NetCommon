@@ -37,18 +37,12 @@ public class BenchmarkTest
 
       var classes = builder.Class;
 
-      var span = new DynamicSpan<StringView>(stackalloc byte[1024]);
       
-      span.Add(new StringView("Test"));
-      span.Add(new StringView("Test1"));
-      span.Add(new StringView("Test2"));
-
-      span.RemoveAt(0);
       
-      foreach (var current in span)
-      {
-         Console.WriteLine(current.ToString());
-      }
+      // foreach (var current in span.DynamicSpan)
+      // {
+      //    Console.WriteLine(current.ToString());
+      // }
       
       return string.Empty;
    }

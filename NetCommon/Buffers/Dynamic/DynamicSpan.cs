@@ -8,8 +8,11 @@ public ref struct DynamicSpan<T>
 {
    public readonly int SpaceLeft => _buffer.Length - _length;
    public readonly Span<byte> FreeBuffer => _buffer[_length..];
+   public readonly Span<byte> WrittenSpan => _buffer[.._length];
 
    public readonly int Count => _itemLength;
+   public readonly int Capacity => _buffer.Length;
+   public readonly int Position => _length;
    
    private readonly Span<byte> _buffer;
    private int _length;
@@ -21,6 +24,16 @@ public ref struct DynamicSpan<T>
       _buffer = buffer;
       _length = 0;
       _itemLength = 0;
+   }
+   
+   public DynamicSpan(
+      Span<byte> buffer,
+      int length,
+      int itemLength)
+   {
+      _buffer = buffer;
+      _length = length;
+      _itemLength = itemLength;
    }
 
    public bool Add(scoped in T item)
