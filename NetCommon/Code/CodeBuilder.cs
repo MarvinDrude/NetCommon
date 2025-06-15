@@ -29,19 +29,26 @@ public ref struct CodeBuilder : IDisposable
    }
    private CodeTextWriter _writer;
 
+   public ref CodeTemporaryStore TemporaryStore
+   {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => ref Unsafe.AsRef(ref _temporaryStore);
+   }
    private CodeTemporaryStore _temporaryStore;
    
    public CodeBuilder(
+      Span<byte> tempBuffer,
       Span<char> buffer,
       Span<char> indentBuffer)
    {
       _writer = new CodeTextWriter(
          buffer, indentBuffer);
+      _temporaryStore = new CodeTemporaryStore(tempBuffer);
 
-      ref var writer = ref Unsafe.AsRef(ref _writer);
+      ref var self = ref Unsafe.AsRef(ref this);
       
-      _nameSpace = new NameSpaceModule(ref writer);
-      _class = new ClassModule(ref writer);
+      _nameSpace = new NameSpaceModule(ref self);
+      _class = new ClassModule(ref self);
    }
    
    public void Dispose()

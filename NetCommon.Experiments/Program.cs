@@ -2,13 +2,7 @@
 using System.Text;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
-using BenchmarkDotNet.Running;
-using NetCommon.Buffers;
-using NetCommon.Buffers.Dynamic;
 using NetCommon.Code;
-using NetCommon.Code.Classes;
-using NetCommon.Code.Modifiers;
-using NetCommon.Code.Modules;
 
 #if RELEASE
 var summary = BenchmarkRunner.Run<BenchmarkTest>();
@@ -24,6 +18,7 @@ public class BenchmarkTest
    public string Run()
    {
       using var builder = new CodeBuilder(
+         stackalloc byte[1024],
          stackalloc char[512],
          stackalloc char[16]);
 

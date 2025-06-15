@@ -7,17 +7,17 @@ namespace NetCommon.Code.Modules;
 [StructLayout(LayoutKind.Auto)]
 public readonly ref struct ClassModule
 {
-   private readonly ByReferenceStack<CodeTextWriter> _writerReference;
+   private readonly ByReferenceStack<CodeBuilder> _builderReference;
 
-   public ref CodeTextWriter Writer
+   public ref CodeBuilder Builder
    {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => ref _writerReference.AsRef();
+      get => ref _builderReference.AsRef();
    }
    
-   public ClassModule(ref CodeTextWriter writer)
+   public ClassModule(ref CodeBuilder builder)
    {
-      _writerReference = ByReferenceStack<CodeTextWriter>.Create(ref writer);
+      _builderReference = ByReferenceStack<CodeBuilder>.Create(ref builder);
    }
 
    
