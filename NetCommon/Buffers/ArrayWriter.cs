@@ -29,15 +29,22 @@ public ref struct ArrayWriter<T> : IDisposable
 
    private ArrayPoolAllocation<T> _growBuffer;
    private int _position;
+   private int _initialCapacity;
 
    private readonly bool _usesPoolMemory => _growBuffer.Length > 0;
    
-   public ArrayWriter(Span<T> buffer)
+   public ArrayWriter(Span<T> buffer, int capacity = -1)
    {
       _buffer = buffer;
       _position = 0;
+      _initialCapacity = capacity;
    }
 
+   public void AddReference(ref T reference)
+   {
+      Add() = reference;
+   }
+   
    public void Add(T value)
    {
       Add() = value;
@@ -88,6 +95,11 @@ public ref struct ArrayWriter<T> : IDisposable
       {
          if (CalculateSize(requestedSize, _buffer.Length, _position, out var grownSize))
          {
+            if (_initialCapacity != -1 && _initialCapacity >= grownSize)
+            {
+               grownSize = _initialCapacity;
+            }
+            
             ArrayPoolAllocator<T>.Create(grownSize, out _growBuffer);
             _buffer.CopyTo(_growBuffer.Span);
 

@@ -9,7 +9,7 @@ public readonly ref struct NameSpaceModule
 {
    private readonly ByReferenceStack<CodeTextWriter> _writerReference;
 
-   private ref CodeTextWriter Writer
+   public ref CodeTextWriter Writer
    {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => ref _writerReference.AsRef();

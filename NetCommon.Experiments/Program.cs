@@ -4,7 +4,9 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Running;
 using NetCommon.Buffers;
+using NetCommon.Buffers.Dynamic;
 using NetCommon.Code;
+using NetCommon.Code.Classes;
 using NetCommon.Code.Modifiers;
 using NetCommon.Code.Modules;
 
@@ -21,7 +23,7 @@ public class BenchmarkTest
    [Benchmark]
    public string Run()
    {
-      var builder = new CodeBuilder(
+      using var builder = new CodeBuilder(
          stackalloc char[512],
          stackalloc char[16]);
 
@@ -34,16 +36,9 @@ public class BenchmarkTest
       nameSpace.Using("System.BB");
 
       var classes = builder.Class;
-      classes.Create(out var mainClass);
 
-      const ClassModifier test = ClassModifier.Abstract | ClassModifier.Unsafe;
-      var testSize = test.GetCharBufferSize();
-      Span<char> span = stackalloc char[testSize];
-      test.FillCharBuffer(span);
-
-      builder.Writer.WriteLine(span);
-
-      builder.Dispose();
+      string w = "dsadsa";
+      StringView a = new(w);
       
       return string.Empty;
    }
